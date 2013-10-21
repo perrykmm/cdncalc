@@ -205,6 +205,8 @@ var
 		
 		CloudFront: function () {
 			var traf = $("#traffic_volume").val();
+			var reqs = $("#inputHttpRequest").val();
+			var reqs_s = $("#inputHttpSRequest").val();
 			var result = 0; 
 			var  note = '', total = 0;
 			total = calculate_total();
@@ -216,7 +218,8 @@ var
 				{traffic:  524000, prices: [{continents:['US','EU'],price: 0.03},{continents:['AS'],price: 0.08},{continents:['SA'],price:0.140},{continents:['AU'],price:0.095},{continents:['JP'],price:0.085},{continents:['IN'],price:0.1}]},
 				{traffic: 4000000, prices: [{continents:['US','EU'],price:0.025},{continents:['AS'],price: 0.07},{continents:['SA'],price:0.130},{continents:['AU'],price:0.090},{continents:['JP'],price:0.075},{continents:['IN'],price:0.1}]},
 				{traffic:      -1, prices: [{continents:['US','EU'],price: 0.02},{continents:['AS'],price: 0.06},{continents:['SA'],price:0.125},{continents:['AU'],price:0.085},{continents:['JP'],price:0.065},{continents:['IN'],price:0.1}]},
-			];               
+			];
+			var requests=[{continents:['US'],price: 0.0075,price_s:0.01},{continents:['EU','AS'],price:0.009,price_s:0.012},{continents:['AU'],price:0.009,price_s:0.0125},{continents:['SA'],price:0.016,price_s:0.022}];               
 			$.each(matrix, function (index) {
 				if (traf <= this.traffic || index == matrix.length-1) {
 					$.each(this.prices, function (){
@@ -236,6 +239,15 @@ var
 				}
 			});
 			show_cdn_plan_notes("CloudFront",note);
+			$.each(requests, function (index) {
+				var cprice = this.price;
+						var cprice_s = this.price_s;
+				$.each(this.continents, function (ci){
+						result += ($("#traffProtocolHTTP:checked").val() ? (reqs*($('#traff'+this).val())*cprice/total):0) + ($("#traffProtocolHTTPS:checked").val() ? (reqs_s*($('#traff'+this).val())*cprice_s/total) : 0)  
+					});
+				});	
+			
+			
 			result = Math.ceil(result);
 			$("#traffic_info tr:contains(CloudFront) td:last").html('$' + result);
 		},
@@ -243,6 +255,7 @@ var
 		Fastly: function () {
 			var traf = $("#traffic_volume").val();
 			var reqs = $("#inputHttpRequest").val();
+			var reqs_s = $("#inputHttpSRequest").val();
 			var result = 0; 
 			var  note = '', total = 0;
 			total = calculate_total();
@@ -275,7 +288,7 @@ var
 						var cprice = this.price;
 						var cprice_s = this.price_s;
 						$.each(this.continents, function (ci){
-							result += ($("#traffProtocolHTTP:checked").val() ? (reqs*($('#traff'+this).val())*cprice/total):0) + ($("#traffProtocolHTTPS:checked").val() ? (reqs*($('#traff'+this).val())*cprice_s/total) : 0);
+							result += ($("#traffProtocolHTTP:checked").val() ? (reqs*($('#traff'+this).val())*cprice/total):0) + ($("#traffProtocolHTTPS:checked").val() ? (reqs_s*($('#traff'+this).val())*cprice_s/total) : 0);
 						});
 					});
 					return false;
@@ -347,6 +360,18 @@ $(document).ready( function(){
 	});
 	$("input").change(function(){
 		recalculate();
+		if ($("#traffProtocolHTTP:checked").val()) {
+			$("#inputHttpRequest").attr('disabled',false);
+		}
+		else {
+			$("#inputHttpRequest").attr('disabled','1');
+		};
+		if ($("#traffProtocolHTTPS:checked").val()) {
+			$("#inputHttpSRequest").attr('disabled',false);
+		}
+		else {
+			$("#inputHttpSRequest").attr('disabled','1');
+		}
 	});
 
 });
