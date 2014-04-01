@@ -1,4 +1,3 @@
-
 var sort_pops = false;
 var sort_price = false;
 
@@ -312,6 +311,39 @@ var
 			$("#traffic_info tr:contains(100TB) td:last").html('$' + result);
 			show_cdn_plan_notes("100TB","Default Plan");
 		},
+		JoDiHost: function () {
+			var traf = $("#traffic_volume").val();
+			switch( true )
+			  { 
+ 			    case traf < 500: 
+			    result = result = Math.ceil(traf * 0.08);
+ 			    show_cdn_plan_notes("JoDiHost","EdgeCast Global Premium");
+ 	  		    break; 
+			 
+		            case traf >= 500 && traf < 1000:
+			    result = result = Math.ceil(traf * 0.07);
+ 			    show_cdn_plan_notes("JoDiHost","EdgeCast Global Premium");
+ 	  		    break; 
+
+		            case traf >= 1000 && traf < 5000:
+			    result = result = Math.ceil(traf * 0.06);
+ 			    show_cdn_plan_notes("JoDiHost","EdgeCast Global Premium");
+ 	  		    break; 
+
+		            case traf >= 5000 && traf < 10000:
+			    result = result = Math.ceil(traf * 0.05);
+ 			    show_cdn_plan_notes("JoDiHost","EdgeCast Global Premium");
+ 	  		    break; 
+
+		            case traf >= 10000:
+			    result = result = Math.ceil(traf * 0.04);
+ 			    show_cdn_plan_notes("JoDiHost","EdgeCast Global Premium");
+ 	  		    break; 
+
+  	 		  }
+			$("#traffic_info tr:contains(JoDiHost) td:last").html('$' + result);
+		},
+
 		
 		
 	};
